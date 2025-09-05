@@ -3,10 +3,11 @@
 import subprocess
 
 from textual.app import App, ComposeResult
-from textual.widgets import Label, Button
+from textual.widgets import Button, Header, Label
 
 class GitUtils:
 
+    # TODO: check somewhere that we are inside git repository before even starting the app
     @staticmethod
     def get_branches() -> list[str]:
         subprocess.run("git pull".split())
@@ -22,18 +23,27 @@ class GitUtils:
 
 class GitApp(App[None]):
 
+    TITLE = "Git TUI App"
+    SUB_TITLE = "App for gitting gud with your branches without moving a mouse"
+
     def compose(self) -> ComposeResult:
+        yield Header()
         yield Label("branches for the current repository")
         branches = GitUtils.get_branches()
         for branch in branches:
             yield Button(branch, id=branch, variant="primary")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        GitUtils.checkout(branch_name=event.button.id)
+        if event.button.id:
+            GitUtils.checkout(branch_name=event.button.id)
         self.exit(event.button.id)
 
 
 if __name__ == "__main__":
     app = GitApp()
-    print(f'Checked Out to branch: "{app.run()}"')
+    result = app.run()
+    if result:
+        print(f'Checked Out to branch: "{result}"')
+    else:
+        print("Branch wasn't selected")
 
