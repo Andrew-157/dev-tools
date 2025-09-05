@@ -28,15 +28,23 @@ class GitApp(App[None]):
 
     def compose(self) -> ComposeResult:
         yield Header()
-        yield Label("branches for the current repository")
         branches = GitUtils.get_branches()
         for branch in branches:
-            yield Button(branch, id=branch, variant="primary")
+            button = Button(branch, id=branch, variant="primary")
+            button.styles.background = "red"
+            yield button
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id:
             GitUtils.checkout(branch_name=event.button.id)
         self.exit(event.button.id)
+
+    def on_mount(self):
+        # TODO: try to use `from textual.color import Color`
+        self.screen.styles.background = "blue"
+
+    def action_quit(self) -> None:
+        self.exit()
 
 
 if __name__ == "__main__":
