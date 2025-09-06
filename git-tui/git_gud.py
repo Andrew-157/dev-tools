@@ -29,11 +29,8 @@ class GitApp(App[None]):
 
     def compose(self) -> ComposeResult:
         yield Header()
-        branches = GitUtils.get_branches()
-        for branch in branches:
-            button = Button(branch, id=branch, variant="primary")
-            button.styles.background = "red"
-            yield button
+        branches = [Button(branch, id=branch, variant="primary") for branch in GitUtils.get_branches()]
+        yield from branches
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id:
