@@ -6,6 +6,7 @@ from textual.app import App, ComposeResult
 from textual.widgets import Button, Header, Label
 
 class GitUtils:
+    # TODO: do not use subprocess to run git commands, use some library for that
 
     # TODO: check somewhere that we are inside git repository before even starting the app
     @staticmethod
